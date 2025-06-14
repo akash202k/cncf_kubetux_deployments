@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/akash202k/cncf-solution  # UPDATE THIS
+    repoURL: https://github.com/akash202k/cncf_kubetux_deployments  # UPDATE THIS
     path: deployments/argocd/applications
     targetRevision: HEAD
   destination:
