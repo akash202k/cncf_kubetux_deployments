@@ -33,7 +33,7 @@ metadata:
 
 spec:
   rules:
-    - host: grafana.dayxcode.com
+    - host: grafana.akashpawar.com
       http:
         paths:
           - path: /

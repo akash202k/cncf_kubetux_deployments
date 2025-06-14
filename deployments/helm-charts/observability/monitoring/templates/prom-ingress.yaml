@@ -33,7 +33,7 @@ metadata:
 
 spec:
   rules:
-    - host: prometheus.dayxcode.com
+    - host: prometheus.akashpawar.com
       http:
         paths:
           - path: /

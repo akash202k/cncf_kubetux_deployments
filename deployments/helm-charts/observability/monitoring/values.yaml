@@ -223,11 +223,11 @@ ingress:
 
   prometheus:
     app: prometheus
-    host: prometheus.dayxcode.com
+    host: prometheus.akashpawar.com
     healthCheck: 
       path: 
 
   grafana: 
     app: grafana
-    host: grafana.dayxcode.com
+    host: grafana.akashpawar.com
     

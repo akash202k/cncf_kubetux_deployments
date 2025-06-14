@@ -33,7 +33,7 @@ metadata:
 
 spec:
   rules:
-    - host: opensearch.dayxcode.com
+    - host: opensearch.akashpawar.com
       http:
         paths:
           - path: /

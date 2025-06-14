@@ -33,7 +33,7 @@ metadata:
 
 spec:
   rules:
-    - host: alert.dayxcode.com
+    - host: alert.akashpawar.com
       http:
         paths:
           - path: /
