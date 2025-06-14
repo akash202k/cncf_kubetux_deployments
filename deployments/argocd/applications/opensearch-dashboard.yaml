@@ -11,7 +11,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/akash202k/cncf-solution  
+    repoURL: https://github.com/akash202k/cncf_kubetux_deployments  
     path: deployments/helm-charts/observability/logging/opensearch-dashboard
     targetRevision: HEAD
     helm:

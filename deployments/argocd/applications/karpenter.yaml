@@ -9,7 +9,7 @@
 # spec:
 #   project: default
 #   source:
-#     repoURL: https://github.com/akash202k/cncf-solution  # Update this to your repo
+#     repoURL: https://github.com/akash202k/cncf_kubetux_deployments  # Update this to your repo
 #     path: deployments/helm-charts/karpenter-resources
 #     targetRevision: HEAD
 #     helm: {}

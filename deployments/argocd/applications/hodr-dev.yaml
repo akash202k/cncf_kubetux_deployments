@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/akash202k/cncf-solution  # Update this
+    repoURL: https://github.com/akash202k/cncf_kubetux_deployments  # Update this
     path: deployments/helm-charts/hodr
     targetRevision: HEAD
     helm: {}
