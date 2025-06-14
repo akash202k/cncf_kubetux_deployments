@@ -1,0 +1,233 @@
+# Prometheus configuration (without operator)
+prometheus:
+  server:
+    enabled: true
+    persistentVolume:
+      enabled: true
+      size: 50Gi
+      storageClass: gp3 # Use our custom EBS storage class
+    retention: "30d"
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 4Gi
+      requests:
+        cpu: 300m
+        memory: 1Gi
+    
+    # Service configuration
+    service:
+      type: ClusterIP
+      port: 80
+    
+    # Enable metric collection from Kubernetes
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+  # Enable node exporter for host metrics
+  nodeExporter:
+    affinity: {}
+    enabled: true
+    hostRootfs: true
+    hostPID: true
+    resources:
+      limits:
+        cpu: 200m
+        memory: 50Mi
+      requests:
+        cpu: 100m
+        memory: 30Mi
+    
+  # Enable kube-state-metrics for Kubernetes metrics
+  kubeStateMetrics:
+    enabled: true
+    resources:
+      limits:
+        cpu: 100m
+        memory: 150Mi
+      requests:
+        cpu: 10m
+        memory: 32Mi
+    
+  # Enable Alertmanager
+  alertmanager:
+    enabled: true
+    persistentVolume:
+      enabled: true
+      size: 10Gi
+      storageClass: gp3
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 32Mi
+
+# Grafana configuration
+
+  enabled: true
+  
+  # Admin credentials
+  adminUser: admin
+  adminPassword: "admin123"  # Change this in production!
+  
+  # Persistence
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: gp3
+    
+  # Resources
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+      
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 80
+      
+  # Grafana configuration
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s/grafana/"
+      serve_from_sub_path: true
+    security:
+      admin_user: admin
+    analytics:
+      check_for_updates: false
+    log:
+      mode: console
+    paths:
+      data: /var/lib/grafana/data
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+      
+  # Data sources - automatically configure Prometheus
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://monitoring-prometheus-server:80
+        access: proxy
+        isDefault: true
+        
+  # Dashboard providers
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+          
+  # Pre-configured dashboards
+  dashboards:
+    default:
+      kubernetes-cluster-monitoring:
+        gnetId: 7249
+        revision: 1
+        datasource: Prometheus
+      node-exporter:
+        gnetId: 1860
+        revision: 23
+        datasource: Prometheus
+      kubernetes-pods:
+        gnetId: 6336
+        revision: 1
+        datasource: Prometheus
+
+# Quick fix: Add this to your grafana section
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: "admin123"
+  
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: gp3
+    
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  
+  service:
+    type: ClusterIP
+    port: 3000  # Use Grafana's default port
+  
+  # Disable probes temporarily
+  readinessProbe:
+    enabled: false
+  livenessProbe:
+    enabled: false
+    
+  # Simple Grafana config
+  grafana.ini:
+    server:
+      http_port: 3000
+    security:
+      admin_user: admin
+      admin_password: admin123
+      
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://observability-prometheus-server:80
+        access: proxy
+        isDefault: true
+# Global settings
+global:
+  # Image pull policy
+  imagePullPolicy: IfNotPresent
+
+
+# Storage Class Configuration
+storageClass:
+  enabled: true
+  name: gp3
+  type: gp3
+  iops: 3000
+  throughput: 125
+  encrypted: true
+  isDefault: true
+
+
+ingress:
+  certificateArn: 'arn:aws:acm:us-east-1:982534355700:certificate/f744adec-d79a-4af8-9476-c507f5a7fe9f'
+  loadBalancerName: cncf-alb
+  groupName: cncf-shared
+  namespace: observability
+  
+
+  prometheus:
+    app: prometheus
+    host: prometheus.dayxcode.com
+    healthCheck: 
+      path: 
+
+  grafana: 
+    app: grafana
+    host: grafana.dayxcode.com
+    

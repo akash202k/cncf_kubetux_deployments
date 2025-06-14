@@ -1,0 +1,59 @@
+# Application Configuration
+app:
+  name: demo-app
+  namespace: demo-app
+
+# Image Configuration
+image:
+  repository: public.ecr.aws/q0k4e9h0/karpenter
+  tag: v1.0.1
+  pullPolicy: IfNotPresent
+
+# Service Configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Deployment Configuration
+deployment:
+  replicaCount: 1
+  
+# Resources - UPDATED to trigger Karpenter scaling
+resources:
+  limits:
+    cpu: 1000m     # 1 vCPU - will fit well in t3.small (2 vCPU)
+    memory: 1Gi    # 1GB RAM - will fit well in t3.small (2GB RAM)
+  requests:
+    cpu: 500m      # This will help trigger new nodes when scaling
+    memory: 512Mi  # Half of t3.small memory
+
+# HPA Configuration - Aggressive for testing
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50  # Lower to trigger scaling faster
+
+# Karpenter node scheduling - FIXED
+scheduling:
+  nodeSelector:
+    # ADD: Target Karpenter nodes specifically
+    karpenter.sh/nodepool: demo-app-nodepool
+  tolerations:
+    - key: app
+      operator: Equal
+      value: demo-app
+      effect: NoSchedule
+
+# Ingress Configuration
+ingress:
+  host: dayxcode.com
+  certificateArn: 'arn:aws:acm:us-east-1:982534355700:certificate/f744adec-d79a-4af8-9476-c507f5a7fe9f'
+  loadBalancerName: cncf-alb
+  groupName: cncf-shared
+
+# Health Check Configuration
+healthCheck:
+  path: /demo-app
+  port: 80

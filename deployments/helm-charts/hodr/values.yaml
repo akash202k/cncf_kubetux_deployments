@@ -1,0 +1,59 @@
+# Application Configuration
+app:
+  name: hodr
+  namespace: cncf-hodr
+
+# Image Configuration
+image:
+  repository: public.ecr.aws/q0k4e9h0/cncf-hodr
+  tag: v1.0.1
+  pullPolicy: IfNotPresent
+
+# Service Configuration
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+# Deployment Configuration
+deployment:
+  replicaCount: 1
+  
+# Resources
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+# HPA Configuration
+hpa:
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 50
+
+# Ingress Configuration
+ingress:
+  host: dayxcode.com
+  certificateArn: 'arn:aws:acm:us-east-1:982534355700:certificate/f744adec-d79a-4af8-9476-c507f5a7fe9f'
+  loadBalancerName: cncf-alb
+  groupName: cncf-shared
+
+# Health Check Configuration
+healthCheck:
+  path: /hodr/metrics
+  port: 8080
+
+
+# Network Policy Configuration
+networkPolicy:
+  enabled: true
+  
+  # What hodr can connect TO (RESTRICTIVE egress)
+  allowEgress:
+    toDNS: true                      # Allow DNS resolution
+    toExternal: true                 # Allow external API calls
+    toMonitoring: false              # Block monitoring if not needed
+    # toBran: false                  # EXPLICITLY NOT ALLOWED (omitted = blocked)

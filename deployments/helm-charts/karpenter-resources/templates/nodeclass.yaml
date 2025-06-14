@@ -1,0 +1,39 @@
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: demo-app-nodeclass
+  namespace: karpenter
+spec:
+  amiFamily: "AL2"
+  role: "KarpenterController-20250607124903465000000001"
+  
+  # Subnet discovery
+  subnetSelectorTerms:
+    - tags:
+        Environment: cncf
+  
+  # Security group discovery  
+  securityGroupSelectorTerms:
+    - tags:
+        Environment : cncf
+  
+  # AMI selection
+  amiSelectorTerms:
+    - id: ami-03571be2203184664
+  
+  # EBS configuration
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeType: gp3
+        encrypted: true
+        volumeSize: 20Gi
+        deleteOnTermination: true
+  
+  # Tags for instances
+  tags:
+    env: demo
+    Name: "karpenter-demo-node"
+    Environment: "demo"
+    ManagedBy: "karpenter"
+    NodePool: "demo-app"
