@@ -6,7 +6,7 @@ app:
 # Image Configuration
 image:
   repository: public.ecr.aws/o9l3s9p6/cncf-bran
-  tag: v1.0.1
+  tag: v1.0.2
   pullPolicy: IfNotPresent
 
 # Service Configuration
